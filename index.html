@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>matrix multiplication</title>
+    <style>
+      .row {
+        max-width: 100%;
+      }
+      .row-cell {
+        width: 2rem;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="primary-form">
+      <label>Liczba wierszy macierzy A</label>
+      <input id="a-rows" type="text" />
+      <label>Liczba kolumn macierzy A i wierszy macierzy B</label>
+      <input id="a-columns" type="text" />
+      <label>Liczba kolumn macierzy B</label>
+      <input id="b-columns" type="text" />
+      <button id="confirm-size">Zatwierdź</button>
+      <button id="reset-size">Resetuj</button>
+    </div>
+    <div>
+      <h3>Macierz A</h3>
+      <div id="matrix-a"></div>
+      <h3>Macierz B</h3>
+      <div id="matrix-b"></div>
+      <button id="calculate">Wygeneruj iloczyn</button>
+    </div>
+    <div>
+      <h3>A * B</h3>
+      <div id="matrix-result"></div>
+    </div>
+    <script>
+      // attach event listeners to primary form buttons
+      const confirmButton = document.getElementById("confirm-size");
+      confirmButton.addEventListener("click", (e) => {
+        // read data from input fields
+        rowsA = document.getElementById("a-rows").value;
+        columnsA = document.getElementById("a-columns").value;
+        collumnsB = document.getElementById("b-columns").value;
+        renderInputForm(rowsA, columnsA, collumnsB);
+      });
+
+      const resetButton = document.getElementById("reset-size");
+      resetButton.addEventListener("click", (e) => {
+        matrixAContainer = document.getElementById("matrix-a");
+        matrixAContainer.innerHTML = "";
+        matrixBContainer = document.getElementById("matrix-b");
+        matrixBContainer.innerHTML = "";
+      });
+
+      const calcButton = document.getElementById("calculate");
+      calcButton.addEventListener("click", calculate);
+
+      function renderInputForm(rowsA, columnsA, columnsB) {
+        const matrixAContainer = document.getElementById("matrix-a");
+        const matrixBContainer = document.getElementById("matrix-b");
+
+        renderMatrixInContainer(matrixAContainer, rowsA, columnsA);
+        renderMatrixInContainer(matrixBContainer, columnsA, columnsB);
+      }
+
+      function calculate() {
+        const resultContainer = document.getElementById("matrix-result");
+        const matrixAContainer = document.getElementById("matrix-a");
+        const matrixBContainer = document.getElementById("matrix-b");
+
+        const matrixA = readMatrixFromInputs(matrixAContainer);
+        const matrixB = readMatrixFromInputs(matrixBContainer);
+        const matrixC = [];
+
+        for (let i = 0; i < matrixA.length; i++) {
+          const row = document.createElement("div");
+          row.classList.add("row");
+          for (let j = 0; j < matrixB[0].length; j++) {
+            let val = 0;
+            for (let k = 0; k < matrixB.length; k++) {
+              val += matrixA[i][k] * matrixB[k][j];
+            }
+            const cell = document.createElement("div");
+            cell.classList.add("row-cell");
+            cell.innerText = val;
+            row.appendChild(cell);
+          }
+          resultContainer.appendChild(row);
+        }
+
+        console.log(matrixC);
+      }
+
+      function readMatrixFromInputs(matrixContainer) {
+        const rows = matrixContainer.children;
+        const matrix = [];
+        for (let i = 0; i < rows.length; i++) {
+          matrix.push([]);
+          const columns = rows[i].children;
+          for (let j = 0; j < columns.length; j++) {
+            const val = columns[j].value;
+            matrix[i].push(val);
+          }
+        }
+        return JSON.parse(JSON.stringify(matrix));
+      }
+
+      function renderMatrixInContainer(container, numRows, numColumns) {
+        container.innerHTML = "";
+        for (let i = 0; i < numRows; i++) {
+          const row = document.createElement("div");
+          row.classList.add("row");
+          for (let j = 0; j < numColumns; j++) {
+            const cell = document.createElement("input");
+            cell.classList.add("row-cell");
+            row.appendChild(cell);
+          }
+          container.appendChild(row);
+        }
+      }
+    </script>
+  </body>
+</html>
